@@ -498,8 +498,7 @@ function updateStatus() {
   els.statusPill.classList.remove("is-loading");
   if (state.lastError && state.items.length > 0) {
     els.statusPill.classList.add("is-offline");
-    els.statusText.textContent = `快照更新 · ${relativeTime(state.updatedAt)}`;
-    standaloneBanner.hidden = false;
+    els.statusText.textContent = `连接中断 · 上次更新 ${relativeTime(state.updatedAt)}`;
     return;
   }
   if (state.lastError && state.items.length === 0) {
@@ -509,9 +508,6 @@ function updateStatus() {
     els.statusText.textContent = `实时更新 · ${relativeTime(state.updatedAt)}`;
   } else {
     els.statusText.textContent = "正在连接";
-  }
-  if (location.protocol !== "file:") {
-    standaloneBanner.hidden = true;
   }
 }
 
@@ -666,7 +662,7 @@ function bindEvents() {
     if (els.autoRefresh.checked) {
       fetchData({ silent: true });
     }
-  }, 60000);
+  }, 30000);
 }
 
 loadInitialData();
