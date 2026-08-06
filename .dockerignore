@@ -1,0 +1,5 @@
+node_modules
+news-cache.json
+.git
+.github
+*.command

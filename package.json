@@ -1,0 +1,10 @@
+{
+  "name": "finance-radar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "本地财经热点新闻追踪站",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  }
+}

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>财经热点雷达</title>
+    <link rel="stylesheet" href="./styles.css?v=3" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true"><i data-lucide="radar"></i></span>
+          <div class="brand-copy">
+            <h1>财经热点雷达</h1>
+            <p>FINANCE · BUSINESS · TECH RADAR</p>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="clock" id="clock" title="当前时间">
+            <i data-lucide="clock" aria-hidden="true"></i>
+            <span>--:--:--</span>
+          </div>
+          <div class="status-pill" id="statusPill">
+            <span class="status-dot"></span>
+            <span>正在连接</span>
+          </div>
+          <button class="icon-btn" id="refreshBtn" type="button" title="立即刷新" aria-label="立即刷新">
+            <i data-lucide="refresh-cw"></i>
+          </button>
+        </div>
+      </header>
+
+      <div id="standaloneBanner" class="standalone-banner" hidden>
+        <i data-lucide="info" aria-hidden="true"></i>
+        <span>当前为快照模式，数据会定时更新；实时本地版请访问 http://localhost:4173</span>
+      </div>
+
+      <section class="ticker" aria-label="数据概览">
+        <div class="ticker-item">
+          <span class="ticker-label">今日收录</span>
+          <strong id="itemCount">–</strong>
+        </div>
+        <div class="ticker-divider" aria-hidden="true"></div>
+        <div class="ticker-item">
+          <span class="ticker-label">活跃信源</span>
+          <strong id="sourceCount">–</strong>
+        </div>
+        <div class="ticker-divider" aria-hidden="true"></div>
+        <div class="ticker-item">
+          <span class="ticker-label">最近更新</span>
+          <strong id="updatedLabel">–</strong>
+        </div>
+        <div class="ticker-divider" aria-hidden="true"></div>
+        <div class="ticker-item">
+          <span class="ticker-label">归档天数</span>
+          <strong id="archiveDays">–</strong>
+        </div>
+      </section>
+
+      <div class="layout">
+        <main class="main-col">
+          <section class="hero panel" id="heroPanel" aria-label="今日头条">
+            <div class="hero-copy">
+              <div class="hero-kicker">
+                <span class="badge badge-accent">今日头条</span>
+                <span class="hero-meta" id="heroMeta">–</span>
+              </div>
+              <h2 class="hero-title" id="heroTitle">正在抓取今日重点新闻…</h2>
+              <p class="hero-desc" id="heroDesc"></p>
+              <a class="hero-link" id="heroLink" href="#" target="_blank" rel="noopener noreferrer">
+                阅读原文
+                <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+              </a>
+            </div>
+            <div class="hero-side">
+              <div class="hero-rank" id="heroRank">#1</div>
+              <div class="hero-score">
+                <span>热点指数</span>
+                <strong id="heroScore">–</strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="feed panel">
+            <div class="feed-toolbar">
+              <div class="search-box">
+                <i data-lucide="search" aria-hidden="true"></i>
+                <input id="searchInput" type="search" placeholder="搜索公司、行业、关键词…" autocomplete="off" />
+              </div>
+              <button class="text-btn" id="clearFiltersBtn" type="button" hidden>
+                <i data-lucide="x"></i>
+                清除筛选
+              </button>
+            </div>
+
+            <div class="tabs-row">
+              <div class="segmented" id="categoryTabs" role="tablist" aria-label="新闻分类">
+                <button class="seg-btn active" type="button" role="tab" aria-selected="true" data-cat="全部">全部</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="国内">国内</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="国际">国际</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="科技公司">科技公司</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="公司动态">公司动态</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="宏观政策">宏观政策</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="市场行情">市场行情</button>
+                <button class="seg-btn" type="button" role="tab" aria-selected="false" data-cat="银行金融">银行金融</button>
+              </div>
+              <div class="feed-controls">
+                <label class="toggle">
+                  <input id="autoRefresh" type="checkbox" checked />
+                  <span>自动刷新</span>
+                </label>
+                <select id="sortSelect" class="select" aria-label="排序方式">
+                  <option value="latest">最新优先</option>
+                  <option value="hot">热点优先</option>
+                  <option value="important">重要优先</option>
+                </select>
+                <select id="importanceSelect" class="select" aria-label="重要度筛选">
+                  <option value="all">全部重要度</option>
+                  <option value="medium_high">中高重要</option>
+                  <option value="high">仅高重要</option>
+                </select>
+                <select id="dateSelect" class="select" aria-label="按日期筛选">
+                  <option value="all">全部日期</option>
+                  <option value="today">今天</option>
+                  <option value="yesterday">昨天</option>
+                  <option value="7d">近 7 天</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="feed-head">
+              <h2>新闻流 <span id="feedHint" class="feed-hint"></span></h2>
+            </div>
+            <div id="newsList" class="news-list" aria-live="polite"></div>
+            <div id="emptyState" class="empty-state" hidden>
+              <i data-lucide="binoculars" aria-hidden="true"></i>
+              <p>暂时没有匹配的新闻，换个关键词试试。</p>
+            </div>
+            <div id="skeleton" class="skeleton" hidden>
+              <div class="sk-line"></div>
+              <div class="sk-line short"></div>
+              <div class="sk-line"></div>
+              <div class="sk-line short"></div>
+              <div class="sk-line"></div>
+            </div>
+          </section>
+        </main>
+
+        <aside class="side-col">
+          <section class="panel side-panel">
+            <div class="panel-head">
+              <h2><i data-lucide="flame" aria-hidden="true"></i>热点榜单</h2>
+            </div>
+            <ol class="hot-list" id="hotList"></ol>
+          </section>
+
+          <section class="panel side-panel">
+            <div class="panel-head">
+              <h2><i data-lucide="archive" aria-hidden="true"></i>历史归档</h2>
+            </div>
+            <div class="archive-list" id="archiveList"></div>
+          </section>
+
+          <section class="panel side-panel">
+            <div class="panel-head">
+              <h2><i data-lucide="gauge" aria-hidden="true"></i>重要度分布</h2>
+            </div>
+            <div class="importance-bars" id="importanceBars"></div>
+          </section>
+
+          <section class="panel side-panel">
+            <div class="panel-head">
+              <h2><i data-lucide="pie-chart" aria-hidden="true"></i>分类分布</h2>
+            </div>
+            <div class="cat-bars" id="catBars"></div>
+          </section>
+
+          <section class="panel side-panel">
+            <div class="panel-head">
+              <h2><i data-lucide="activity" aria-hidden="true"></i>信源状态</h2>
+            </div>
+            <ul class="source-list" id="sourceList"></ul>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <script id="initial-data" type="application/json"><!--INITIAL_DATA--></script>
+    <script src="./vendor/lucide.min.js"></script>
+    <script src="./data.js"></script>
+    <script src="./app.js?v=3"></script>
+  </body>
+</html>
